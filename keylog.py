@@ -1,20 +1,21 @@
-#coding=utf-8
+#!/usr/bin/python3
 
-import pyxhook
+from tkinter import messagebox, Tk
+import keyboard
 import os
 
-klawisze = "000000"
-slowa = ["aannn1", "aammm2", "555032", "555-03"]
+buffer_length = 20
+buffer = " " * buffer_length
+triggers = ["tr1", "w"]
 
-def OnKeyPress(event):
-  global klawisze
-  temp = klawisze[1:] + chr(event.Ascii)
-  klawisze = temp
-  for slowo in slowa:
-    if slowo == klawisze:
-      os.system("python /home/frix/dialog.py")
+def onKeyPress(event):
+  global buffer
+  buffer = buffer[-buffer_length+1:] + event.name
+  print(buffer)
+  for word in triggers:
+    if buffer.endswith(word):
+      Tk().withdraw()
+      messagebox.showinfo("Title", "Contents")
 
-hook = pyxhook.HookManager()
-hook.KeyDown=OnKeyPress
-hook.HookKeyboard()
-hook.start()
+keyboard.on_press(onKeyPress)
+keyboard.wait()
